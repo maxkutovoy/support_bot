@@ -11,9 +11,7 @@ def create_intent():
     """Create an intent of the given intent type."""
     from google.cloud import dialogflow
 
-    project_id = 'speech-recognition-lyfe'
-    session_id = '479351324'
-    language_code = 'ru'
+    project_id = env.str('PROJECT_ID')
 
     with open('questions.json') as file:
         questions = json.load(file)
