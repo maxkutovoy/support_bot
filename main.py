@@ -23,9 +23,10 @@ def start(update: Update, context: CallbackContext):
 
 
 def vk_echo(event, vk_api):
+    answer = detect_intent_texts(event.text)
     vk_api.messages.send(
         user_id=event.user_id,
-        message=event.text,
+        message=answer,
         random_id=random.randint(1,1000)
     )
 
