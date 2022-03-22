@@ -61,8 +61,8 @@ def detect_intent_texts(text):
     response = session_client.detect_intent(
         request={"session": session, "query_input": query_input}
     )
-
-    return response.query_result.fulfillment_text
+    if not response.query_result.intent.is_fallback:
+        return response.query_result.fulfillment_text
 
 
 def main():
