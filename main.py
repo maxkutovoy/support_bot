@@ -4,7 +4,8 @@ import os
 
 from environs import Env
 from telegram import Update, ForceReply
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
+                          CallbackContext)
 from pathlib import Path
 
 env = Env()
@@ -25,7 +26,11 @@ def main():
     dispatcher = updater.dispatcher
 
     dispatcher.add_handler(CommandHandler('start', start))
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+    dispatcher.add_handler(MessageHandler(
+        Filters.text & ~Filters.command,
+        echo
+        )
+    )
 
     updater.start_polling()
     updater.idle()
