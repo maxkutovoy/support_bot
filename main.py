@@ -9,6 +9,8 @@ from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
 from pathlib import Path
 from google.cloud import storage
 
+from create_intent import create_intent
+
 env = Env()
 env.read_env()
 
