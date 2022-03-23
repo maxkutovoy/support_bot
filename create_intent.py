@@ -1,59 +1,51 @@
 import json
 
 from environs import Env
-from google.cloud import storage
-
-env = Env()
-env.read_env()
+from google.cloud import dialogflow
 
 
-def create_intent():
-    """Create an intent of the given intent type."""
-    from google.cloud import dialogflow
-
-    project_id = env.str('PROJECT_ID')
+def create_intent(project_id):
 
     with open('questions.json') as file:
-        questions = json.load(file)
+        intents = json.load(file)
 
-    getting_job_intent = questions['Устройство на работу']
-    getting_job_questions = getting_job_intent['questions']
-    answers = []
-    getting_job_answers = getting_job_intent['answer']
-    answers.append(getting_job_answers)
+    for intent_name, intent_description in intents.items():
 
+        questions = intent_description['questions']
+        answers = []
+        answer = intent_description['answer']
+        answers.append(answer)
 
-    intents_client = dialogflow.IntentsClient()
+        intents_client = dialogflow.IntentsClient()
 
-    parent = dialogflow.AgentsClient.agent_path(project_id)
-    training_phrases = []
+        parent = dialogflow.AgentsClient.agent_path(project_id)
+        training_phrases = []
 
-    for question in getting_job_questions:
-        print(question)
-        part = dialogflow.Intent.TrainingPhrase.Part(text=question)
-        # Here we create a new training phrase for each provided part.
-        training_phrase = dialogflow.Intent.TrainingPhrase(parts=[part])
-        training_phrases.append(training_phrase)
+        for question in questions:
+            part = dialogflow.Intent.TrainingPhrase.Part(text=question)
+            training_phrase = dialogflow.Intent.TrainingPhrase(parts=[part])
+            training_phrases.append(training_phrase)
 
-    # text = dialogflow.Intent.Message.Text(text=answers)
-    # messages = dialogflow.Intent.Message(text=text)
+        messages = [{'text': {'text': [answer]}} for answer in answers]
 
-    display_name = 'Как устроиться к вам на работу'
-    messages = [{'text': {'text': [answer]}} for answer in answers]
+        intent_for_dialogflow = dialogflow.Intent(
+            display_name=intent_name,
+            training_phrases=training_phrases,
+            messages=messages,
+        )
 
-    intent = dialogflow.Intent(
-        display_name=display_name, training_phrases=training_phrases, messages=messages
-    )
-
-    response = intents_client.create_intent(
-        request={"parent": parent, "intent": intent}
-    )
-
-    # print("Intent created: {}".format(response))
+        response = intents_client.create_intent(
+            request={"parent": parent, "intent": intent_for_dialogflow}
+        )
 
 
 def main():
-    create_intent()
+
+    env = Env()
+    env.read_env()
+
+    project_id = env.str('PROJECT_ID')
+    create_intent(project_id)
 
 
 if __name__ == '__main__':
