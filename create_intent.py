@@ -1,7 +1,14 @@
 import json
+import logging
+import requests
 
+import telegram
 from environs import Env
 from google.cloud import dialogflow
+
+import log_handler
+
+logger = logging.getLogger('New intent logger')
 
 
 def create_intent(project_id):
@@ -44,8 +51,15 @@ def main():
     env = Env()
     env.read_env()
 
+    tg_bot = telegram.Bot(token=env.str('TG_TOKEN'))
+    logger.setLevel(logging.WARNING)
+    logger.addHandler(log_handler.TelegramLogsHandler(tg_bot))
+
     project_id = env.str('PROJECT_ID')
-    create_intent(project_id)
+    try:
+        create_intent(project_id)
+    except requests.exceptions.HTTPError as error:
+        logging.warning('Не удалось добавить новые вопросы')
 
 
 if __name__ == '__main__':
