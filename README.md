@@ -1,5 +1,7 @@
 # Чат бот для Вконтакте и Телеграм с интеграцией DialogFlow.
 
+![Peek 2022-03-24 23-55](https://user-images.githubusercontent.com/90130732/159979912-f3d62853-7a69-47fe-86fc-6cdda1e0fa7b.gif)
+
 Чат-бот для Вконтакте и Телеграм. Поведение задается через сервис [DialogFlow](https://dialogflow.cloud.google.com)
 
 Проверить работу бота можно написав сообщение в группе [Вконтакте](https://vk.com/club208544402) или [Телеграм](https://t.me/botforexperimetsbot) 
