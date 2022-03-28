@@ -1,7 +1,7 @@
 import json
 import logging
-import requests
 
+import requests
 import telegram
 from environs import Env
 from google.cloud import dialogflow
