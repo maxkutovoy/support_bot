@@ -5,6 +5,7 @@ from environs import Env
 
 def detect_intent_texts(text):
     from google.cloud import dialogflow
+    from google.api_core.exceptions import InvalidArgument
 
     env = Env()
     env.read_env()
@@ -18,9 +19,13 @@ def detect_intent_texts(text):
     text_input = dialogflow.TextInput(text=text, language_code=language_code)
     query_input = dialogflow.QueryInput(text=text_input)
 
-    response = session_client.detect_intent(
-        request={"session": session, "query_input": query_input}
-    )
+    try:
+        response = session_client.detect_intent(
+            request={'session': session, 'query_input': query_input}
+        )
 
-    if not response.query_result.intent.is_fallback:
-        return response.query_result.fulfillment_text
+        if not response.query_result.intent.is_fallback:
+            return response.query_result.fulfillment_text
+
+    except InvalidArgument:
+        return 'Неверный запрос. Бот понимает только текст'
