@@ -26,9 +26,10 @@ def main():
     env = Env()
     env.read_env()
 
+    tg_chat_id = env.str('TG_CHAT_ID')
     tg_bot = telegram.Bot(token=env.str('TG_TOKEN'))
     logger.setLevel(logging.WARNING)
-    logger.addHandler(log_handler.TelegramLogsHandler(tg_bot))
+    logger.addHandler(log_handler.TelegramLogsHandler(tg_bot, tg_chat_id))
 
     vk_token = env.str('VK_TOKEN')
     vk_session = vk.VkApi(token=vk_token)

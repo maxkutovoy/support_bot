@@ -1,14 +1,14 @@
 import logging
-import os
 
 from environs import Env
 
 
 class TelegramLogsHandler(logging.Handler):
 
-    def __init__(self, tg_bot):
+    def __init__(self, tg_bot, tg_chat_id):
         super().__init__()
         self.tg_bot = tg_bot
+        self.tg_chat_id = tg_chat_id
 
     def emit(self, record):
         env = Env()
@@ -16,6 +16,6 @@ class TelegramLogsHandler(logging.Handler):
 
         log_entry = self.format(record)
         self.tg_bot.send_message(
-            chat_id=env.str('TG_CHAT_ID'),
+            chat_id=self.tg_chat_id,
             text=log_entry
         )

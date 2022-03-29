@@ -33,10 +33,10 @@ def main():
     env.read_env()
 
     tg_token = env.str('TG_TOKEN')
-
+    tg_chat_id = env.str('TG_CHAT_ID')
     tg_bot = telegram.Bot(token=tg_token)
     logger.setLevel(logging.WARNING)
-    logger.addHandler(log_handler.TelegramLogsHandler(tg_bot))
+    logger.addHandler(log_handler.TelegramLogsHandler(tg_bot, tg_chat_id))
 
     updater = Updater(tg_token)
     dispatcher = updater.dispatcher
