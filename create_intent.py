@@ -23,9 +23,7 @@ def create_intent(project_id):
     for intent_name, intent_description in intents.items():
 
         questions = intent_description['questions']
-        answers = []
-        answer = intent_description['answer']
-        answers.append(answer)
+        answers = [intent_description['answer']]
 
         intents_client = dialogflow.IntentsClient()
 
