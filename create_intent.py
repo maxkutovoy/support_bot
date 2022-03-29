@@ -11,11 +11,15 @@ import log_handler
 logger = logging.getLogger('New intent logger')
 
 
+def get_json_from_file(file_path):
+    with open(file_path) as file:
+        json_raw = json.load(file)
+    return json_raw
+
+
 def create_intent(project_id):
 
-    with open('questions.json') as file:
-        intents = json.load(file)
-
+    intents = get_json_from_file('questions.json')
     for intent_name, intent_description in intents.items():
 
         questions = intent_description['questions']
@@ -51,9 +55,10 @@ def main():
     env = Env()
     env.read_env()
 
+    tg_chat_id = env.str('TG_CHAT_ID')
     tg_bot = telegram.Bot(token=env.str('TG_TOKEN'))
     logger.setLevel(logging.WARNING)
-    logger.addHandler(log_handler.TelegramLogsHandler(tg_bot))
+    logger.addHandler(log_handler.TelegramLogsHandler(tg_bot, tg_chat_id))
 
     project_id = env.str('PROJECT_ID')
     try:
