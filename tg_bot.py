@@ -8,7 +8,7 @@ from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
                           CallbackContext)
 
 import log_handler
-from service import detect_intent_texts
+from dialogflow_detect_intent import detect_intent_texts
 
 logger = logging.getLogger('TG logger')
 

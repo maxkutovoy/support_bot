@@ -8,7 +8,7 @@ from environs import Env
 from vk_api.longpoll import VkLongPoll, VkEventType
 
 import log_handler
-from service import detect_intent_texts
+from dialogflow_detect_intent import detect_intent_texts
 
 logger = logging.getLogger('VK logger')
 
