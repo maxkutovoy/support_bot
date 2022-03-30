@@ -12,5 +12,4 @@ def detect_intent_texts(text, df_project_id, session_id, language_code):
         request={'session': session, 'query_input': query_input}
     )
 
-    if not response.query_result.intent.is_fallback:
-        return response.query_result.fulfillment_text
+    return response

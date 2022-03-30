@@ -27,12 +27,14 @@ def tg_send_answer(update: Update, context: CallbackContext):
     chat_id = update.message.chat_id
 
     try:
-        answer = detect_intent_texts(
+        df_response = detect_intent_texts(
             text,
             df_project_id=df_project_id,
             session_id=chat_id,
             language_code=language_code,
         )
+        answer = df_response.query_result.fulfillment_text
+
     except InvalidArgument:
         answer = 'Неверный запрос. Бот понимает только текст.'
         return answer
