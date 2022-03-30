@@ -5,6 +5,7 @@ import requests.exceptions
 import telegram
 import vk_api as vk
 from environs import Env
+from google.api_core.exceptions import InvalidArgument
 from vk_api.longpoll import VkLongPoll, VkEventType
 
 import log_handler
@@ -15,12 +16,17 @@ logger = logging.getLogger('VK logger')
 
 def vk_send_answer(event, vk_api, df_project_id, language_code):
     vk_user_id = event.user_id
-    answer = detect_intent_texts(
-        event.text,
-        df_project_id=df_project_id,
-        session_id=vk_user_id,
-        language_code=language_code,
-    )
+    try:
+        answer = detect_intent_texts(
+            event.text,
+            df_project_id=df_project_id,
+            session_id=vk_user_id,
+            language_code=language_code,
+        )
+    except InvalidArgument:
+        answer = 'Неверный запрос. Бот понимает только текст.'
+        return answer
+
     vk_api.messages.send(
         user_id=vk_user_id,
         message=answer,

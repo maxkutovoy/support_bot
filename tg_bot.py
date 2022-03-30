@@ -3,12 +3,14 @@ import logging
 import requests
 import telegram
 from environs import Env
+from google.api_core.exceptions import InvalidArgument
 from telegram import Update
 from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
                           CallbackContext)
 
 import log_handler
 from dialogflow_detect_intent import detect_intent_texts
+
 
 logger = logging.getLogger('TG logger')
 
@@ -23,12 +25,18 @@ def tg_send_answer(update: Update, context: CallbackContext):
 
     text = update.message.text
     chat_id = update.message.chat_id
-    answer = detect_intent_texts(
-        text,
-        df_project_id=df_project_id,
-        session_id=chat_id,
-        language_code=language_code,
-    )
+
+    try:
+        answer = detect_intent_texts(
+            text,
+            df_project_id=df_project_id,
+            session_id=chat_id,
+            language_code=language_code,
+        )
+    except InvalidArgument:
+        answer = 'Неверный запрос. Бот понимает только текст.'
+        return answer
+
     context.bot.send_message(
         chat_id=chat_id,
         text=answer,
