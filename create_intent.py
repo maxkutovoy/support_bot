@@ -13,13 +13,12 @@ logger = logging.getLogger('New intent logger')
 
 def get_json_from_file(file_path):
     with open(file_path) as file:
-        json_raw = json.load(file)
-    return json_raw
+        intents = json.load(file)
+    return intents
 
 
-def create_intent(project_id):
+def create_intent(intents, project_id):
 
-    intents = get_json_from_file('questions.json')
     for intent_name, intent_description in intents.items():
 
         questions = intent_description['questions']
@@ -60,7 +59,8 @@ def main():
 
     project_id = env.str('PROJECT_ID')
     try:
-        create_intent(project_id)
+        intents = get_json_from_file('questions.json')
+        create_intent(intents, project_id)
     except requests.exceptions.HTTPError as error:
         logging.warning('Не удалось добавить новые вопросы')
 
