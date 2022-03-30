@@ -13,10 +13,16 @@ from dialogflow_detect_intent import detect_intent_texts
 logger = logging.getLogger('VK logger')
 
 
-def vk_send_answer(event, vk_api):
-    answer = detect_intent_texts(event.text)
+def vk_send_answer(event, vk_api, df_project_id, language_code):
+    vk_user_id = event.user_id
+    answer = detect_intent_texts(
+        event.text,
+        df_project_id=df_project_id,
+        session_id=vk_user_id,
+        language_code=language_code,
+    )
     vk_api.messages.send(
-        user_id=event.user_id,
+        user_id=vk_user_id,
         message=answer,
         random_id=random.randint(1, 1000)
     )
@@ -31,6 +37,8 @@ def main():
     logger.setLevel(logging.WARNING)
     logger.addHandler(log_handler.TelegramLogsHandler(tg_bot, tg_chat_id))
 
+    df_project_id = env.str('PROJECT_ID')
+    language_code = env.str('LANGUAGE_CODE', 'ru')
     vk_token = env.str('VK_TOKEN')
     vk_session = vk.VkApi(token=vk_token)
     vk_api = vk_session.get_api()
@@ -38,7 +46,7 @@ def main():
     for event in longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW and event.to_me:
             try:
-                vk_send_answer(event, vk_api)
+                vk_send_answer(event, vk_api, df_project_id, language_code)
             except requests.exceptions.HTTPError as error:
                 logger.warning('Проблема с ботом Вконтакте')
 

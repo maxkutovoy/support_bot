@@ -18,13 +18,20 @@ def start(update: Update, context: CallbackContext):
 
 
 def tg_send_answer(update: Update, context: CallbackContext):
+    df_project_id = context.bot_data['df_project_id']
+    language_code = context.bot_data['language_code']
 
     text = update.message.text
     chat_id = update.message.chat_id
-    answer = detect_intent_texts(text)
+    answer = detect_intent_texts(
+        text,
+        df_project_id=df_project_id,
+        session_id=chat_id,
+        language_code=language_code,
+    )
     context.bot.send_message(
         chat_id=chat_id,
-        text=answer
+        text=answer,
     )
 
 
@@ -40,6 +47,9 @@ def main():
 
     updater = Updater(tg_token)
     dispatcher = updater.dispatcher
+
+    dispatcher.bot_data['df_project_id'] = env.str('PROJECT_ID')
+    dispatcher.bot_data['language_code'] = env.str('LANGUAGE_CODE', 'ru')
 
     dispatcher.add_handler(CommandHandler('start', start))
     dispatcher.add_handler(MessageHandler(
