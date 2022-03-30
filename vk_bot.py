@@ -16,20 +16,16 @@ logger = logging.getLogger('VK logger')
 
 def vk_send_answer(event, vk_api, df_project_id, language_code):
     vk_user_id = event.user_id
-    try:
-        df_response = detect_intent_texts(
-            event.text,
-            df_project_id=df_project_id,
-            session_id=vk_user_id,
-            language_code=language_code,
-        )
-        answer = df_response.query_result.fulfillment_text
 
-    except InvalidArgument:
-        answer = 'Неверный запрос. Бот понимает только текст.'
-        return answer
+    df_response = detect_intent_texts(
+        event.text,
+        df_project_id=df_project_id,
+        session_id=vk_user_id,
+        language_code=language_code,
+    )
 
     if not df_response.query_result.intent.is_fallback:
+        answer = df_response.query_result.fulfillment_text
         vk_api.messages.send(
             user_id=vk_user_id,
             message=answer,
